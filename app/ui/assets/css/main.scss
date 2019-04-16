@@ -1,0 +1,25 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~open-iconic/font/css/open-iconic-bootstrap.css';
+@import '~@wcrichto/vgrid/dist/vgrid.css';
+
+@import 'search-input';
+@import 'sidebar';
+
+body {
+    background: #fefefe;
+    font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.login-error {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 30px;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.search-result {
+    position: relative;
+}

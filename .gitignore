@@ -1,0 +1,9 @@
+# Files
+docker-compose.yml
+service-key.json
+.scanner.toml
+
+# Extensions
+**/*.pyc
+**/*.swp
+**/__pycache__

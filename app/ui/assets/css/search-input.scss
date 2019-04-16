@@ -1,0 +1,92 @@
+.search-input {
+    $spacing: 10px;
+
+    margin-bottom: 2*$spacing;
+
+    .spinner {
+        height: 30px;
+        margin-left: 15px;
+    }
+
+    .panel {
+        margin: 0;
+    }
+
+    .control-label {
+        font-weight: normal;
+        margin-right: 5px;
+    }
+
+    button {
+        outline: 0!important;
+    }
+
+    .schema {
+        margin-top: $spacing;
+
+        .schema-classes {
+            overflow: auto;
+
+            .schema-class-name {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .schema-class {
+                float: left;
+                width: 120px;
+                margin-right: $spacing;
+                margin-bottom: $spacing;
+            }
+
+            .schema-class-fields {
+                overflow: auto;
+                height: 120px;
+            }
+
+            .schema-field {
+                cursor: pointer;
+            }
+
+            .panel-body {
+                padding: 5px 10px;
+            }
+        }
+
+        img {
+            margin-top: $spacing;
+        }
+
+        .schema-example {
+            margin-top: $spacing;
+
+            .schema-example-name {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+        }
+    }
+
+    .example-queries {
+        margin-top: $spacing;
+    }
+
+    .ace_editor {
+        margin-bottom: $spacing;
+    }
+
+    button {
+        margin-right: $spacing;
+    }
+
+    .alert {
+        margin-top: 10px;
+
+        pre {
+            border: none;
+            background: transparent;
+            padding: 0;
+            margin: 0;
+        }
+    }
+}

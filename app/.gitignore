@@ -1,0 +1,11 @@
+# Directories
+data
+scanner_db
+.ipynb_checkpoints
+.cache
+esper/migrations
+
+# Files
+supervisord.conf
+service-key.json
+.dummy

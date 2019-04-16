@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
+
+{% block content %}
+{% render_bundle 'web' %}
+{% endblock %}

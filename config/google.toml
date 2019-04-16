@@ -1,0 +1,18 @@
+[google]
+project = "visualdb-1046"
+zone = "us-east1-d"
+
+[storage]
+type = "google"
+bucket = "esper"
+path = "public/will"
+
+[database]
+type = "google"
+name = "esper-dev"
+user = "will"
+password = "foobar"
+
+[docker]
+base_image_name = "esper-base"
+device = "cpu"
