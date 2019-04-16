@@ -86,7 +86,7 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: Dockerfile.app
+      dockerfile: build/Dockerfile.app
       args:
         cores: {cores}
     depends_on: [db, frameserver]
@@ -353,7 +353,7 @@ stderr_logfile_maxbytes=0""".format(process, command)
         open('app/.dummy', 'a').close()
 
         sp.check_call(
-            'docker build {pull} -t {base_name}:{device} {build_args} -f app/Dockerfile.base app' \
+            'docker build {pull} -t {base_name}:{device} {build_args} -f app/build/Dockerfile.base app' \
             .format(
                 device=build_device,
                 base_name=base_name,

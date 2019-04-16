@@ -9,9 +9,9 @@ ENV APPDIR=/app
 WORKDIR ${APPDIR}
 
 RUN apt-get update && apt-get install -y default-jre postgresql-9.5 libpq-dev gdb
-COPY ./scripts ./scripts
-COPY ./requirements.base.txt ./
-RUN ./scripts/build-tf.sh
+COPY ./build/build-tf.sh /tmp/
+COPY ./build/requirements.base.txt ./
+RUN /tmp/build-tf.sh
 RUN pip3 install -r requirements.base.txt
 
 COPY ./.dummy scannerpatc[h] ./

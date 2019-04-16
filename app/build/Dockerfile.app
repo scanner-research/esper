@@ -17,7 +17,7 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-xenial main" | \
     apt-get update && apt-get install -y google-cloud-sdk kubectl
 
 # Python setup
-COPY requirements.app.txt ./
+COPY build/requirements.app.txt ./
 RUN pip3 install -r requirements.app.txt
 
 # supervisor only works with python2, so have to specially download old pip to install it
