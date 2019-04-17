@@ -84,7 +84,7 @@ def main():
         image: redis:4
         ports: ['{port}:6379']
         environment: []
-    """.format(port=base_config.docker.ports.redis))
+    """.format(port=base_config.ports.redis))
     }
 
     supervisord_conf = """
@@ -146,9 +146,9 @@ def main():
           - seccomp=unconfined
     """.format(
             home=os.path.expanduser(base_config.docker.dotfiles_dir),
-            nginx_port=base_config.docker.ports.nginx,
-            ipython_port=base_config.docker.ports.ipython,
-            frameserver_port=base_config.docker.ports.frameserver,
+            nginx_port=base_config.ports.nginx,
+            ipython_port=base_config.ports.ipython,
+            frameserver_port=base_config.ports.frameserver,
             cores=cores,
             workers=cores * 2,
             columns=tsize.columns,

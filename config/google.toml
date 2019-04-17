@@ -16,3 +16,11 @@ password = "foobar"
 [docker]
 base_image_name = "esper-base"
 device = "cpu"
+extra_services = ["spark"]
+dotfiles_dir = "~"
+
+[ports]
+nginx = 80
+ipython = 8888
+redis = 6379
+frameserver = 7500
