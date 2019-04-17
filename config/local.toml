@@ -2,11 +2,18 @@
 type = "local"
 
 [database]
-type = "local"       # Database is stored/run locally
-user = "will"        # Username
-password = "foobar"  # Password
+type = "local"
+user = "will"
+password = "foobar"
 
 [docker]
 base_image_name = "esper-base"
 device = "cpu"
 extra_services = ["spark"]
+dotfiles_dir = "~"
+
+[docker.ports]
+nginx = 80
+ipython = 8888
+redis = 6379
+frameserver = 7500

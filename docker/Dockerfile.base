@@ -9,12 +9,12 @@ ENV APPDIR=/app
 WORKDIR ${APPDIR}
 
 RUN apt-get update && apt-get install -y default-jre postgresql-9.5 libpq-dev gdb
-COPY ./build/scripts/build-tf.sh /tmp/
-COPY ./build/requirements.base.txt ./
+COPY ./docker/scripts/build-tf.sh /tmp/
+COPY ./docker/requirements.base.txt ./
 RUN /tmp/build-tf.sh
 RUN pip3 install -r requirements.base.txt
 
-COPY ./.dummy scannerpatc[h] ./
+COPY manage.py scannerpatc[h] ./
 RUN if [ -f /app/scannerpatch ]; then \
     cd /opt/scanner && \
     git apply /app/scannerpatch && \

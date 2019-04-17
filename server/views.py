@@ -35,7 +35,7 @@ VTT_FROM_CAPTION_INDEX = True
 # Renders home page
 def index(request):
     import app.queries
-    from esper.lib.queries import QUERIES
+    from esper.queries import QUERIES
 
     def get_fields(cls):
         fields = cls._meta.get_fields()
@@ -75,8 +75,8 @@ def search(request):
 
         if not isinstance(result, dict):
             return make_error(
-                'Result must be a dict {{result, count, type}}, received type {}'.format(
-                    type(result)))
+                'Result must be a dict {{result, count, type}}, received type {}'
+                .format(type(result)))
 
         if not isinstance(result['result'], list):
             return make_error('Result must be a frame list')
@@ -91,10 +91,11 @@ def search(request):
 def schema(request):
     params = json.loads(request.body.decode('utf-8'))
 
-    cls = next(m for m in django.apps.apps.get_models() if m.__name__ == params['cls_name'])
+    cls = next(m for m in django.apps.apps.get_models()
+               if m.__name__ == params['cls_name'])
     result = [
-        r[params['field']]
-        for r in cls.objects.values(params['field']).distinct().order_by(params['field'])[:100]
+        r[params['field']] for r in cls.objects.values(
+            params['field']).distinct().order_by(params['field'])[:100]
     ]
     try:
         json.dumps(result)
@@ -107,17 +108,20 @@ def schema(request):
 # Convert captions in SRT format to WebVTT (for displaying in web UI)
 def srt_to_vtt(s, shift):
     subs = pysrt.from_string(s)
-    subs.shift(shift)  # Seems like TV news captions are delayed by a few seconds
+    subs.shift(
+        shift)  # Seems like TV news captions are delayed by a few seconds
 
     entry_fmt = '{position}\n{start} --> {end}\n{text}'
 
     def fmt_time(t):
-        return '{:02d}:{:02d}:{:02d}.{:03d}'.format(t.hours, t.minutes, t.seconds, t.milliseconds)
+        return '{:02d}:{:02d}:{:02d}.{:03d}'.format(t.hours, t.minutes,
+                                                    t.seconds, t.milliseconds)
 
     entries = [
-        entry_fmt.format(
-            position=i, start=fmt_time(sub.start), end=fmt_time(sub.end), text=sub.text)
-        for i, sub in enumerate(subs)
+        entry_fmt.format(position=i,
+                         start=fmt_time(sub.start),
+                         end=fmt_time(sub.end),
+                         text=sub.text) for i, sub in enumerate(subs)
     ]
 
     return '\n\n'.join(['WEBVTT'] + entries)

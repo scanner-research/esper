@@ -17,7 +17,7 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-xenial main" | \
     apt-get update && apt-get install -y google-cloud-sdk kubectl
 
 # Python setup
-COPY build/requirements.app.txt ./
+COPY docker/requirements.app.txt ./
 RUN pip3 install -r requirements.app.txt
 
 # supervisor only works with python2, so have to specially download old pip to install it
@@ -26,7 +26,7 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     pip install supervisor==3.3.3
 
 # IPython config
-COPY build/scripts/ipython_config.py /root/.ipython/profile_default/ipython_config.py
+COPY docker/scripts/ipython_config.py /root/.ipython/profile_default/ipython_config.py
 
 # Fix npm hanging on OS X
 # https://github.com/npm/npm/issues/7862#issuecomment-220798263
@@ -37,8 +37,8 @@ RUN npm config set registry http://registry.npmjs.org && \
 RUN npm config set prefix /root/.local
 
 # Setup bash helpers
-COPY build/scripts/esper-run build/scripts/esper-ipython /usr/bin/
-COPY build/scripts/common.sh /tmp
+COPY docker/scripts/esper-run docker/scripts/esper-ipython /usr/bin/
+COPY docker/scripts/common.sh /tmp
 RUN cat /tmp/common.sh >> /root/.bashrc
 
 # Fix Google Cloud Storage URL library dependencies
@@ -51,6 +51,6 @@ ENV PYTHONPATH $PYTHONPATH:/app
 ENV PYTHONPATH /opt/scannertools:$PYTHONPATH
 
 CMD cp .scanner.toml /root/ && \
-    ./build/scripts/google-setup.sh && \
-    ./build/scripts/jupyter-setup.sh && \
+    ./docker/scripts/google-setup.sh && \
+    ./docker/scripts/jupyter-setup.sh && \
     supervisord -c supervisord.conf

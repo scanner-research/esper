@@ -30,15 +30,10 @@ ALLOWED_HOSTS = ['app', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'webpack_loader',
-    'django_extensions',
-    'esper.apps.DjangoConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'webpack_loader', 'django_extensions', 'server.apps.DjangoConfig',
+    'django.contrib.admin', 'django.contrib.auth',
+    'django.contrib.contenttypes', 'django.contrib.sessions',
+    'django.contrib.messages', 'django.contrib.staticfiles'
 ]
 
 MIDDLEWARE = [
@@ -95,16 +90,20 @@ if password is not None:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -126,14 +125,14 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'ui/assets')
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'ui/assets')]
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'ui/assets/bundles/webpack-stats.json')
+        'BUNDLE_DIR_NAME':
+        'bundles/',
+        'STATS_FILE':
+        os.path.join(BASE_DIR, 'ui/assets/bundles/webpack-stats.json')
     }
 }
 
@@ -142,4 +141,7 @@ WEBPACK_LOADER = {
 CSRF_COOKIE_NAME = "XSRF-TOKEN"
 
 # Make Jupyter notebook work within container
-NOTEBOOK_ARGUMENTS = ['--ip', '0.0.0.0', '--allow-root', '--port', os.environ.get('IPYTHON_PORT')]
+NOTEBOOK_ARGUMENTS = [
+    '--ip', '0.0.0.0', '--allow-root', '--port',
+    os.environ.get('IPYTHON_PORT')
+]

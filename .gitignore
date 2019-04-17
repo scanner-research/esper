@@ -1,7 +1,13 @@
+# Directories
+data
+.ipynb_checkpoints
+.cache
+
 # Files
 docker-compose.yml
 service-key.json
 .scanner.toml
+supervisord.conf
 
 # Extensions
 **/*.pyc

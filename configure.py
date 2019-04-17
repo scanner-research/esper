@@ -19,121 +19,6 @@ cores = multiprocessing.cpu_count()
 def yaml_load(s):
     return DotMap(yaml.safe_load(s))
 
-extra_services = {
-    'spark':
-    yaml_load("""
-build:
-  context: ./spark
-  args: {}
-ports: ['8080:8080', '8081:8081', '7077']
-environment: []
-depends_on: [db]
-volumes:
-  - ./app:/app
-"""),
-    'gentle':
-    yaml_load("""
-image: lowerquality/gentle
-environment: []
-ports: ['8765']
-command: bash -c "cd /gentle && python serve.py --ntranscriptionthreads 8"
-"""),
-    'redis':
-    yaml_load("""
-redis:
-    image: redis:4
-    ports: ['6379:6379']
-    environment: []
-""")
-}
-
-supervisord_conf = """
-[supervisord]
-nodaemon=true
-logfile=/tmp/supervisord.log
-pidfile=/tmp/supervisord.pid
-user=root
-"""
-
-base_processes = {
-    'gunicorn': 'gunicorn --log-file=- -c gunicorn_conf.py django_settings.wsgi:application --reload',
-    'notebook': 'python3 manage.py shell_plus --notebook'
-}
-
-extra_processes = {'npm': 'npm run watch --color'}
-
-tsize = shutil.get_terminal_size()
-config = yaml_load("""
-version: '2.3'
-services:
-  nginx:
-    build:
-      context: ./nginx
-    command: ["bash", "/tmp/subst.sh"]
-    volumes:
-      - ./app:/app
-      - ./nginx:/tmp
-    depends_on: [app, frameserver]
-    ports: ["{nginx_port}:{nginx_port}", "{ipython_port}:{ipython_port}"]
-    environment: ["PORT={nginx_port}"]
-
-  frameserver:
-    image: scannerresearch/frameserver
-    ports: ['7500:7500']
-    environment:
-      - 'WORKERS={workers}'
-
-  app:
-    build:
-      context: ./app
-      dockerfile: build/Dockerfile.app
-      args:
-        cores: {cores}
-    depends_on: [db, frameserver]
-    volumes:
-      - ./app:/app
-      - ./service-key.json:/app/service-key.json
-    ports: ["8000", "{ipython_port}"]
-    environment:
-      - IPYTHON_PORT={ipython_port}
-      - JUPYTER_PASSWORD=esperjupyter
-      - COLUMNS={columns}
-      - LINES={lines}
-      - TERM={term}
-      - RUST_BACKTRACE=full
-    tty: true # https://github.com/docker/compose/issues/2231#issuecomment-165137408
-    privileged: true # make perf work
-    security_opt: # make gdb work
-      - seccomp=unconfined
-""".format(
-        home=os.path.expanduser('~'),
-        nginx_port=NGINX_PORT,
-        ipython_port=IPYTHON_PORT,
-        cores=cores,
-        workers=cores * 2,
-        columns=tsize.columns,
-        lines=tsize.lines,
-        term=os.environ.get('TERM')))
-
-db_options = {
-    'local':
-    yaml_load("""
-build:
-    context: ./db
-environment:
-  - POSTGRES_DB=esper
-volumes: ["./db/data:/var/lib/postgresql/data", "./app:/app"]
-ports: ["5432"]
-"""),
-
-    'google': yaml_load("""
-image: gcr.io/cloudsql-docker/gce-proxy:1.09
-volumes: ["./service-key.json:/config"]
-environment: []
-ports: ["5432"]
-""")
-}
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -145,7 +30,7 @@ def main():
         '--extra-processes',
         nargs='*',
         default=[],
-        choices=extra_processes.keys(),
+        choices=['npm'],
         help='Optional processes to run by default in application container')
     parser.add_argument('--no-build', action='store_true', help='Don\'t build any Docker images')
     parser.add_argument('--build-tf', action='store_true', help='Build TensorFlow from scratch')
@@ -174,6 +59,122 @@ def main():
     # TODO(wcrichto): validate config file
     base_config = DotMap(toml.load(args.config))
 
+    extra_services = {
+        'spark':
+        yaml_load("""
+    build:
+      context: ./docker/spark
+      args: {}
+    ports: ['7077']
+    environment: []
+    depends_on: [db]
+    volumes:
+      - ./app:/app
+    """),
+        'gentle':
+        yaml_load("""
+    image: lowerquality/gentle
+    environment: []
+    ports: ['8765']
+    command: bash -c "cd /gentle && python serve.py --ntranscriptionthreads 8"
+    """),
+        'redis':
+        yaml_load("""
+    redis:
+        image: redis:4
+        ports: ['{port}:6379']
+        environment: []
+    """.format(port=base_config.docker.ports.redis))
+    }
+
+    supervisord_conf = """
+    [supervisord]
+    nodaemon=true
+    logfile=/tmp/supervisord.log
+    pidfile=/tmp/supervisord.pid
+    user=root
+    """
+
+    base_processes = {
+        'gunicorn': 'gunicorn --log-file=- -c gunicorn_conf.py django_settings.wsgi:application --reload',
+        'notebook': 'python3 manage.py shell_plus --notebook'
+    }
+
+    extra_processes = {'npm': 'npm run watch --color'}
+
+    tsize = shutil.get_terminal_size()
+    config = yaml_load("""
+    version: '2.3'
+    services:
+      nginx:
+        build:
+          context: ./docker/nginx
+        command: ["bash", "/tmp/subst.sh"]
+        volumes:
+          - .:/app
+          - ./docker/nginx:/tmp
+        depends_on: [app, frameserver]
+        ports: ["{nginx_port}:80", "{ipython_port}:8888"]
+        environment: []
+
+      frameserver:
+        image: scannerresearch/frameserver
+        ports: ['{frameserver_port}:7500']
+        environment: ['WORKERS={workers}']
+
+      app:
+        build:
+          context: .
+          dockerfile: docker/Dockerfile.app
+          args:
+            cores: {cores}
+        depends_on: [db, frameserver]
+        volumes:
+          - .:/app
+          - ./service-key.json:/app/service-key.json
+        ports: ["8000", "{ipython_port}"]
+        environment:
+          - IPYTHON_PORT={ipython_port}
+          - JUPYTER_PASSWORD=esperjupyter
+          - COLUMNS={columns}
+          - LINES={lines}
+          - TERM={term}
+          - RUST_BACKTRACE=full
+        tty: true # https://github.com/docker/compose/issues/2231#issuecomment-165137408
+        privileged: true # make perf work
+        security_opt: # make gdb work
+          - seccomp=unconfined
+    """.format(
+            home=os.path.expanduser(base_config.docker.dotfiles_dir),
+            nginx_port=base_config.docker.ports.nginx,
+            ipython_port=base_config.docker.ports.ipython,
+            frameserver_port=base_config.docker.ports.frameserver,
+            cores=cores,
+            workers=cores * 2,
+            columns=tsize.columns,
+            lines=tsize.lines,
+            term=os.environ.get('TERM')))
+
+    db_options = {
+        'local':
+        yaml_load("""
+    build:
+        context: ./docker/db
+    environment:
+      - POSTGRES_DB=esper
+    volumes: ["./data/postgresql:/var/lib/postgresql/data", ".:/app"]
+    ports: ["5432"]
+    """),
+
+        'google': yaml_load("""
+    image: gcr.io/cloudsql-docker/gce-proxy:1.09
+    volumes: ["./service-key.json:/config"]
+    environment: []
+    ports: ["5432"]
+    """)
+    }
+
+
     # Google Cloud config
     if 'google' in base_config:
         if not os.path.isfile('service-key.json'):
@@ -183,7 +184,6 @@ def main():
             'GOOGLE_PROJECT={}'.format(base_config.google.project),
             'GOOGLE_ZONE={}'.format(base_config.google.zone)
         ])
-        config.services.app.ports.append('8001:8001')  # for kubectl proxy
 
     # GPU settings
     device = base_config.docker.device
@@ -230,7 +230,7 @@ def main():
 
     # Supervisord proceseses
     all_processes = {**base_processes, **{p: extra_processes[p] for p in args.extra_processes}}
-    global supervisord_conf
+
     for process, command in all_processes.items():
         supervisord_conf += """
 \n[program:{}]
@@ -277,7 +277,7 @@ stderr_logfile_maxbytes=0""".format(process, command)
             'db_path': '{}/scanner_db'.format(base_config.storage.path)
         }
     else:
-        scanner_config['storage'] = {'type': 'posix', 'db_path': '/app/scanner_db'}
+        scanner_config['storage'] = {'type': 'posix', 'db_path': '/app/data/scanner_db'}
 
     ### Frameserver
     env.append('FILESYSTEM={}'.format(base_config.storage.type))
@@ -323,7 +323,7 @@ stderr_logfile_maxbytes=0""".format(process, command)
         service.environment.extend(env)
 
     ### Write out generated configuration files
-    with open('app/.scanner.toml', 'w') as f:
+    with open('.scanner.toml', 'w') as f:
         f.write(toml.dumps(scanner_config))
 
     with open('docker-compose.yml', 'w') as f:
@@ -349,11 +349,8 @@ stderr_logfile_maxbytes=0""".format(process, command)
             'build_tf': 'on' if args.build_tf else 'off'
         }
 
-        # Create dummy file for scannerpatch
-        open('app/.dummy', 'a').close()
-
         sp.check_call(
-            'docker build {pull} -t {base_name}:{device} {build_args} -f app/build/Dockerfile.base app' \
+            'docker build {pull} -t {base_name}:{device} {build_args} -f docker/Dockerfile.base .' \
             .format(
                 device=build_device,
                 base_name=base_name,

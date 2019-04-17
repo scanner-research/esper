@@ -1,5 +1,6 @@
-from esper.lib.views import register_view
+from esper.views import register_view
 from django.http import JsonResponse
+
 
 # Example view that incremental an id parameter by one.
 # Visit /api/example?id=1 and it should return {"id": 2}.

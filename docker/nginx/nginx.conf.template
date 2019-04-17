@@ -10,7 +10,7 @@ http {
     include /etc/nginx/mime.types;
 
     server {
-        listen ${PORT};
+        listen 80;
         server_name server;
 
         access_log /dev/stdout;

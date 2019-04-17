@@ -20,6 +20,10 @@ from tqdm import tqdm
 MAX_STR_LEN = 256
 
 
+def FK(model, *args, **kwargs):
+    return models.ForeignKey(model, *args, on_delete=models.CASCADE, **kwargs)
+
+
 class QuerySetMixin(object):
     def explain(self):
         # TODO(wcrichto): doesn't work for queries with strings
@@ -121,7 +125,13 @@ def CharField(*args, **kwargs):
     return models.CharField(*args, max_length=MAX_STR_LEN, **kwargs)
 
 
-class Video(models.Model):
+class EsperModel(models.Model):
+    class Meta:
+        abstract = True
+        app_label = 'esper'
+
+
+class Video(EsperModel):
     path = CharField(db_index=True)
     num_frames = models.IntegerField()
     fps = models.FloatField()
@@ -130,7 +140,7 @@ class Video(models.Model):
     has_captions = models.BooleanField(default=False)
 
     def copy(self, path):
-        from esper.prelude import storage
+        from esper.util import storage
         with open(path, 'wb') as f:
             f.write(storage.read(self.path))
 
@@ -174,31 +184,31 @@ class Video(models.Model):
         from scannertools import Video as STVideo
         return STVideo(self.path)
 
-    class Meta:
+    class Meta(EsperModel.Meta):
         abstract = True
 
 
-class Frame(models.Model):
+class Frame(EsperModel):
     number = models.IntegerField(db_index=True)
-    video = models.ForeignKey(Video)
+    video = FK(Video)
 
-    class Meta:
+    class Meta(EsperModel.Meta):
         abstract = True
 
 
-class Labeler(models.Model):
+class Labeler(EsperModel):
     name = CharField()
 
-    class Meta:
+    class Meta(EsperModel.Meta):
         abstract = True
 
 
 def Track(Labeler):
-    class Track(models.Model):
+    class Track(EsperModel):
         min_frame = models.IntegerField()
         max_frame = models.IntegerField()
-        video = models.ForeignKey(Video)
-        labeler = models.ForeignKey(Labeler)
+        video = FK(Video)
+        labeler = FK(Labeler)
 
         @staticmethod
         def duration_expr():
@@ -209,23 +219,23 @@ def Track(Labeler):
         def duration(self):
             return (self.max_frame - self.min_frame) / int(self.video.fps)
 
-        class Meta:
+        class Meta(EsperModel.Meta):
             abstract = True
 
     return Track
 
 
 def Labeled(Labeler):
-    class Labeled(models.Model):
-        labeler = models.ForeignKey(Labeler)
+    class Labeled(EsperModel):
+        labeler = FK(Labeler)
 
-        class Meta:
+        class Meta(EsperModel.Meta):
             abstract = True
 
     return Labeled
 
 
-class BoundingBox(models.Model):
+class BoundingBox(EsperModel):
     bbox_x1 = models.FloatField()
     bbox_x2 = models.FloatField()
     bbox_y1 = models.FloatField()
@@ -245,7 +255,7 @@ class BoundingBox(models.Model):
             self.bbox_score
         ])
 
-    class Meta:
+    class Meta(EsperModel.Meta):
         abstract = True
 
 
@@ -253,7 +263,7 @@ feat_nn = None
 feat_ids = None
 
 
-class Features(models.Model):
+class Features(EsperModel):
     features = models.BinaryField()
     distto = models.FloatField(null=True)
 
@@ -292,11 +302,11 @@ class Features(models.Model):
             feat.distto = dist
             feat.save()
 
-    class Meta:
+    class Meta(EsperModel.Meta):
         abstract = True
 
 
-class Pose(models.Model):
+class Pose(EsperModel):
     keypoints = models.BinaryField()
 
     def _format_keypoints(self):
@@ -341,5 +351,5 @@ class Pose(models.Model):
         base = kp[self.POSE_KEYPOINTS + self.FACE_KEYPOINTS:, :]
         return [base[:self.HAND_KEYPOINTS, :], base[self.HAND_KEYPOINTS:, :]]
 
-    class Meta:
+    class Meta(EsperModel.Meta):
         abstract = True
