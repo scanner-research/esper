@@ -128,7 +128,7 @@ def CharField(*args, **kwargs):
 class EsperModel(models.Model):
     class Meta:
         abstract = True
-        app_label = 'esper'
+        app_label = 'server'
 
 
 class Video(EsperModel):
@@ -179,6 +179,9 @@ class Video(EsperModel):
 
     def frame_time(self, frame):
         return frame / self.fps
+
+    def duration(self):
+        return self.num_frames / self.fps
 
     def for_scannertools(self):
         from scannertools import Video as STVideo

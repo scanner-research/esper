@@ -7,8 +7,8 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    web: './assets/js/web',
-    styles: './assets/css/main',
+    web: './js/web',
+    styles: './css/main',
   },
 
   context: __dirname,
@@ -16,16 +16,16 @@ module.exports = {
   // Include source maps for all compiled files
   devtool: 'source-map',
 
-  // Put all output files at assets/bundles
+  // Put all output files at bundles
   output: {
-    path: path.resolve('./assets/bundles/'),
+    path: path.resolve('./bundles/'),
     filename: "[name].js",
   },
 
   plugins: [
     // BundleTracker lets Django know about the webpack build status, displaying errors if
     // they occur
-    new BundleTracker({filename: './assets/bundles/webpack-stats.json'}),
+    new BundleTracker({filename: './bundles/webpack-stats.json'}),
 
     // ExtractTextPlugin allows us to separate CSS output files from JS.
     // See: https://github.com/webpack-contrib/extract-text-webpack-plugin
@@ -74,7 +74,7 @@ module.exports = {
   // TODO: generic way to resolve aliases?
   resolve: {
     symlinks: false, // https://github.com/npm/npm/issues/5875
-    modules: ['node_modules', 'assets'],
+    modules: ['node_modules', 'src'],
     extensions: ['.js', '.jsx', '.scss', '.css']
   }
 };

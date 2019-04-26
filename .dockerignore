@@ -1,1 +1,8 @@
+# Directories
 data
+.ipynb_checkpoints
+.cache
+
+# Files
+docker-compose.yml
+supervisord.conf

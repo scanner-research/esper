@@ -42,24 +42,6 @@ let selectModeToString = (i) => {
 class Options extends React.Component {
   fields = [
     {
-      name: 'Label mode',
-      key: 'label_mode',
-      type: 'option',
-      opts: {
-        keys: _.values(LABEL_MODES),
-        values: _.values(LABEL_MODES).map((i) => labelModeToString(i))
-      }
-    },
-    {
-      name: 'Select mode',
-      key: 'select_mode',
-      type: 'option',
-      opts: {
-        keys: _.values(SELECT_MODES),
-        values: _.values(SELECT_MODES).map((i) => selectModeToString(i))
-      }
-    },
-    {
       name: 'Results per page',
       key: 'results_per_page',
       type: 'range',
@@ -68,27 +50,6 @@ class Options extends React.Component {
         min: 1,
         max: 500
       }
-    },
-    {
-      name: 'Playback speed',
-      key: 'playback_speed',
-      type: 'range',
-      opts: {
-        min: 0,
-        max: 6,
-        step: 0.1
-      },
-    },
-    {
-      name: 'Annotation opacity',
-      key: 'annotation_opacity',
-      type: 'range',
-      filter: (g) => g.elements[0].objects,
-      opts: {
-        min: 0,
-        max: 1,
-        step: 0.1
-      },
     },
     {
       name: 'Thumbnail size',
@@ -101,85 +62,10 @@ class Options extends React.Component {
       },
     },
     {
-      name: 'Timeline range (s)',
-      key: 'timeline_range',
-      type: 'range',
-      filter: (g) => g.type == 'contiguous',
-      opts: {
-        min: 1,
-        max: 300,
-        step: 1,
-        disable_autoupdate: true
-      },
-    },
-    {
       name: 'Crop bboxes',
       key: 'crop_bboxes',
       type: 'radio',
-      filter: (g) => g.elements[0].objects,
-    },
-    {
-      name: 'Show gender as border',
-      key: 'show_gender_as_border',
-      type: 'radio',
-      filter: (g) => g.elements[0].objects && g.elements[0].objects.length > 0 && g.elements[0].objects[0].gender_id
-    },
-    {
-      name: 'Show inline metadata',
-      key: 'show_inline_metadata',
-      type: 'radio'
-    },
-    {
-      name: 'Show hands',
-      key: 'show_hands',
-      type: 'radio',
-      filter: (g) => g.elements[0].objects && g.elements[0].objects.length > 0 && g.elements[0].objects[0].type == 'pose'
-    },
-    {
-      name: 'Show pose',
-      key: 'show_pose',
-      type: 'radio',
-      filter: (g) => g.elements[0].objects && g.elements[0].objects.length > 0 && g.elements[0].objects[0].type == 'pose'
-    },
-    {
-      name: 'Show face',
-      key: 'show_face',
-      type: 'radio',
-      filter: (g) => g.elements[0].objects && g.elements[0].objects.length > 0 && g.elements[0].objects[0].type == 'pose'
-    },
-    {
-      name: 'Show left/right (blue/red)',
-      key: 'show_lr',
-      type: 'radio',
-      filter: (g) => g.elements[0].objects && g.elements[0].objects.length > 0 && g.elements[0].objects[0].type == 'pose'
-    },
-    {
-      name: 'Show middle frame',
-      key: 'show_middle_frame',
-      type: 'radio',
-      filter: (g) => g.elements[0].max_frame !== undefined
-    },
-    {
-      name: 'Color tracks by identity',
-      key: 'track_color_identity',
-      type: 'radio',
-      filter: (g) => g.type == 'contiguous'
-    },
-    {
-      name: 'Show subtitle sidebar',
-      key: 'subtitle_sidebar',
-      type: 'radio',
-      filter: (g) => g.type == 'contiguous'
-    },
-    {
-      name: 'Spinner dev mode',
-      key: 'spinner_dev_mode',
-      type: 'radio'
-    },
-    {
-      name: 'Disable caption box',
-      key: 'disable_captions',
-      type: 'radio'
+      filter: (g) => false
     },
 
   ]
@@ -190,7 +76,7 @@ class Options extends React.Component {
         <h2>Options</h2>
         <form>
           {this.fields.map((field, i) => {
-             return (!field.filter || field.filter(dataContext.groups[0]))
+             return (!field.filter || field.filter(dataContext[0]))
                  ?  <Rb.FormGroup key={i}>
                    <Rb.ControlLabel>{field.name}</Rb.ControlLabel>
                    {{

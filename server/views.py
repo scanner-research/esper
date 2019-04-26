@@ -35,7 +35,7 @@ VTT_FROM_CAPTION_INDEX = True
 # Renders home page
 def index(request):
     import app.queries
-    from esper.queries import QUERIES
+    from esperlib.queries import QUERIES
 
     def get_fields(cls):
         fields = cls._meta.get_fields()
@@ -73,15 +73,7 @@ def search(request):
         result = _locals['FN']()
         ############### ^^^ DANGER -- REMOTE CODE EXECUTION ^^^ ###############
 
-        if not isinstance(result, dict):
-            return make_error(
-                'Result must be a dict {{result, count, type}}, received type {}'
-                .format(type(result)))
-
-        if not isinstance(result['result'], list):
-            return make_error('Result must be a frame list')
-
-        return JsonResponse({'success': result_with_metadata(result)})
+        return JsonResponse({'success': result})
 
     except Exception:
         return make_error(traceback.format_exc())

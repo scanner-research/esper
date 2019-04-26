@@ -17,7 +17,7 @@ django-extensions==1.9.6
 psycopg2==2.6.2
 sqlparse==0.2.4
 
-pyspark==2.4.0
+pyspark==2.4.2
 redis==3.2.1
 scikit-learn==0.20.3
 
@@ -29,3 +29,7 @@ iterextras==0.1.0
 google_images_download==2.5.0
 internetarchive==1.8.4
 pysrt==1.1.1
+
+rekallpy
+vgridpy
+vgrid_jupyter

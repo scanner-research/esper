@@ -1,4 +1,4 @@
-from esper.models import Video
+from esperlib.models import Video
 
 # Put your custom models in here. Run python3 manage.py makemigrations && python3 manage.py migrate to update
 # the SQL database. For more detail: https://docs.djangoproject.com/en/2.2/topics/migrations/

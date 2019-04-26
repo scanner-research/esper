@@ -10,7 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import SearchInput from './SearchInput.jsx';
 import Sidebar from './Sidebar.jsx';
-import {VGrid} from '@wcrichto/vgrid';
+import {VGrid, Database, interval_blocks_from_json} from '@wcrichto/vgrid';
 import {SettingsContext, DataContext} from './contexts';
 import Provider from './Provider.jsx';
 import Consumer from './Consumer.jsx';
@@ -25,7 +25,8 @@ export default class App extends React.Component {
   state = {
     valid: true,
     clickedBox: null,
-    dataContext: null,
+    database: null,
+    interval_blocks: null,
     i: 0
   }
 
@@ -43,7 +44,11 @@ export default class App extends React.Component {
   }
 
   _onSearch = (results) => {
-    this.setState({dataContext: results, i: this.state.i + 1});
+    this.setState({
+      interval_blocks: interval_blocks_from_json(results.interval_blocks),
+      database: Database.from_json(results.database),
+      i: this.state.i + 1
+    });
   }
 
   _onBoxClick = (box) => {
@@ -61,15 +66,16 @@ export default class App extends React.Component {
           <h1>Esper</h1>
           <div className='home'>
             <Provider values={[
-              [DataContext, this.state.dataContext],
+              [DataContext, this.state.interval_blocks],
               [SettingsContext, this._settings]]}>
               <div>
                 <SearchInput onSearch={this._onSearch} clickedBox={this.state.clickedBox} />
-                {this.state.dataContext !== null
-                 ? (this.state.dataContext.groups.length > 0
+                {this.state.interval_blocks !== null
+                 ? (this.state.interval_blocks.length > 0
                   ? <div className='search-result'>
-                    <VGrid data={this.state.dataContext} settings={this._settings}
-                           onSave={this._onSave} resultNumber={this.state.i} />
+                    <VGrid interval_blocks={this.state.interval_blocks}
+                           database={this.state.database}
+                           settings={this._settings} />
                     <Sidebar />
                   </div>
                   : <div>No results matching query.</div>)
