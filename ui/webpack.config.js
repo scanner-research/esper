@@ -2,8 +2,8 @@
 
 const path = require('path');
 const BundleTracker = require('webpack-bundle-tracker');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: {
@@ -27,28 +27,15 @@ module.exports = {
     // they occur
     new BundleTracker({filename: './bundles/webpack-stats.json'}),
 
-    // ExtractTextPlugin allows us to separate CSS output files from JS.
-    // See: https://github.com/webpack-contrib/extract-text-webpack-plugin
-    new ExtractTextPlugin("[name].css"),
+    // Separate out included CSS files
+    new MiniCssExtractPlugin({filename: "[name].css"}),
   ],
 
   module: {
     rules: [{
-      test: /\.scss$/,
-      use: ExtractTextPlugin.extract({
-        use: [{
-          loader: "css-loader"
-        }, {
-          loader: "sass-loader"
-        }]
-      })
-    }, {
-      test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        use: [{
-          loader: "css-loader"
-        }]
-      })
+      // Compile Sass into CSS, bundle into a single file
+      test: /\.*css$/,
+      use: ['style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
     }, {
       // Stops Bootstrap from complaining
       test: /\.(png|woff|woff2|eot|ttf|svg|otf)$/,

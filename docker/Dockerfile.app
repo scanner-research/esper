@@ -30,8 +30,11 @@ COPY docker/scripts/ipython_config.py /root/.ipython/profile_default/ipython_con
 
 # Fix npm hanging on OS X
 # https://github.com/npm/npm/issues/7862#issuecomment-220798263
+ENV PATH /root/.local/bin:$PATH
 RUN npm config set registry http://registry.npmjs.org && \
-    npm config set strict-ssl false
+    npm config set strict-ssl false && \
+    npm install -g npm n && \
+    n stable
 
 # Install npm packages in ~/.local by default so they persist across container restarts
 RUN npm config set prefix /root/.local

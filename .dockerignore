@@ -2,6 +2,7 @@
 data
 .ipynb_checkpoints
 .cache
+deps
 
 # Files
 docker-compose.yml

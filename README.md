@@ -23,6 +23,16 @@ $ cd esper
 $ pip3 install -r requirements.txt
 $ python3 configure.py --config config/local.toml
 $ docker-compose up -d
+$ docker-compose run app bash -c "cd ui && npm install && npm run prepublishOnly"
 ```
 
 **:warning: WARNING :warning:**: Esper is a tool for programmers. It uses a programmatic query interface, which means we use **_REMOTE CODE EXECUTION_** to run queries. DO NOT expose this interface publicly, or else risk having a hacker trash your computer, data, and livelihood.
+
+### Esper developers
+
+If you're developing the Esper core platform or otherwise want to stay up to date with our dependencies, then you should clone and link our submodules.
+
+```
+$ git submodule update --init --recursive
+$ docker-compose run app bash -c "./deps/install.sh"
+```

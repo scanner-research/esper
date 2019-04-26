@@ -1,0 +1,18 @@
+[submodule "rekall"]
+	path = deps/rekall
+	url = https://github.com/scanner-research/rekall/
+[submodule "vgrid"]
+	path = deps/vgrid
+	url = https://github.com/scanner-research/vgrid
+[submodule "vgrid_jupyter"]
+	path = deps/vgrid_jupyter
+	url = https://github.com/scanner-research/vgrid_jupyter
+[submodule "rs-embed"]
+	path = deps/rs-embed
+	url = https://github.com/scanner-research/rs-embed
+[submodule "caption-index"]
+	path = deps/caption-index
+	url = https://github.com/scanner-research/caption-index
+[submodule "deps/esper-model-server"]
+	path = deps/esper-model-server
+	url = https://github.com/scanner-research/esper-model-server
