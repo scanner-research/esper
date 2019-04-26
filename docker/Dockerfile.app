@@ -42,7 +42,7 @@ RUN npm config set prefix /root/.local
 # Setup bash helpers
 COPY docker/scripts/esper-run docker/scripts/esper-ipython /usr/bin/
 COPY docker/scripts/common.sh /tmp
-RUN cat /tmp/common.sh >> /root/.profile
+RUN cat /tmp/common.sh >> /root/.profile && cat /tmp/common.sh >> /root/.bashrc
 
 # Fix Google Cloud Storage URL library dependencies
 RUN unset PYTHONPATH && pip2 install cryptography
