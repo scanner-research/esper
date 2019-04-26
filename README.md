@@ -35,7 +35,7 @@ $ cd esper
 $ pip3 install -r docker/requirements.host.txt
 $ python3 docker/configure.py --config config/local.toml
 $ docker-compose up -d
-$ docker-compose run app bash -c "cd ui && npm install && npm run prepublishOnly"
+$ docker-compose run app bash --login -c "cd ui && npm install && npm run prepublishOnly"
 ```
 
 ### Esper developers
@@ -44,5 +44,5 @@ If you're developing the Esper core platform or otherwise want to stay up to dat
 
 ```
 $ git submodule update --init --recursive
-$ docker-compose run app bash -c "./deps/install.sh"
+$ docker-compose run app bash --login -c "./deps/install.sh"
 ```
