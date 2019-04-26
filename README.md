@@ -25,15 +25,15 @@ $ docker --version
 Docker version 17.12.0-ce, build c97c6d6
 ```
 
-> Note: If you have a GPU and are running on Linux, then install [nvidia-docker2.](https://github.com/NVIDIA/nvidia-docker). Set `device = "gpu-9.1-cudnn7` in `config/local.toml`.
+> Note: If you have a GPU and are running on Linux, then install [nvidia-docker2](https://github.com/NVIDIA/nvidia-docker). Set `device = "gpu-9.1-cudnn7` in `config/local.toml`.
 
 Next, you will need to configure your Esper installation.
 
 ```
 $ git clone https://github.com/scanner-research/esper
 $ cd esper
-$ pip3 install -r requirements.txt
-$ python3 configure.py --config config/local.toml
+$ pip3 install -r docker/requirements.host.txt
+$ python3 docker/configure.py --config config/local.toml
 $ docker-compose up -d
 $ docker-compose run app bash -c "cd ui && npm install && npm run prepublishOnly"
 ```
