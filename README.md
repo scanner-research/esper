@@ -35,7 +35,7 @@ $ cd esper
 $ pip3 install -r docker/requirements.host.txt
 $ python3 docker/configure.py --config config/local.toml
 $ docker-compose up -d
-$ docker-compose run app bash --login -c "cd ui && npm install && npm run prepublishOnly"
+$ docker-compose run app bash --login -c "cd ui && npm install --unsafe-perm && npm run prepublishOnly"
 ```
 
 ### Esper developers

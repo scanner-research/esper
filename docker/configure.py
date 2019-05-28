@@ -88,11 +88,11 @@ def main():
     }
 
     supervisord_conf = """
-    [supervisord]
-    nodaemon=true
-    logfile=/tmp/supervisord.log
-    pidfile=/tmp/supervisord.pid
-    user=root
+[supervisord]
+nodaemon=true
+logfile=/tmp/supervisord.log
+pidfile=/tmp/supervisord.pid
+user=root
     """
 
     base_processes = {
@@ -239,7 +239,7 @@ stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0""".format(process, command)
-    with open('app/supervisord.conf', 'w') as f:
+    with open('supervisord.conf', 'w') as f:
         f.write(supervisord_conf)
 
     env = ['ESPER_ENV={}'.format(base_config.storage.type),
