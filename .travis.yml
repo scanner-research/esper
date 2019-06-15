@@ -1,0 +1,12 @@
+language: python
+python: 3.5
+install: pip3 install .
+deploy:
+  skip_cleanup: true
+  provider: pypi
+  user: wcrichto
+  password:
+    secure: "r/43HxpTd4MW/UchMZ4+TWbVMLqUa7gFXnTbeB7bX5qjLm3damAKySinZOP27W/UqEafjugLd4tvGysrG0liT7fy7FVnZF3OxY88em+pD8ixuImL+rO9bdHeKW+SGaej4Ph30PI+JrnIZyl2rZQY5pyZxwgS/0rvGFBN9m/6uAccJeQBRZq6+zcQwp9qqHjQOsMWyuDxY7PVZl2rVluxF413VzZrmd5cLqeU4v/0MXTEF5XWkDDayR54NXrcNai/r8e+Y2uuwBUyKX/EuKhgdCHKlTuzalKLn4oZjDY4PmLtOik61XlU5E580LzNYMq1TB0sXo/l9N92OcZibc9CZ3F5l9u2NJbz9egeOUYztfOMOMkeHDJy1SzSE4fuUAFRr/jaEH+sjP09VA1cyoABa4jZS42h7nQtFuYOIrJSCiPo5JCkR/FMqOJBGxiGHvg8HtvUL9sW4WZHfem2IAXMaVJ+wvnvb4AspBnXz8HgmX+TM0rVeWY69eI2Or0PkEF0UNG4iV/HZkMqw4mEMxcFa+ikhumIxzSnjEo1PJIQpj47OugcC4YoBpnpm2zEOXLxRttYMbgkAOL4DowZU3Yrb1GkxWsTQAvJP7FENIFO9mXDUEFzoP5d5mhxdKq4JFCoBYHJvvt8T/BgqFvlVP97d0+skcMy8YMGSWXQRrzIJ+I="
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
