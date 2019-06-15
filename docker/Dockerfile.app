@@ -52,8 +52,10 @@ ENV GOOGLE_APPLICATION_CREDENTIALS ${APPDIR}/service-key.json
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/lib:/usr/local/lib/python3.5/dist-packages/hwang
 ENV PYTHONPATH $PYTHONPATH:/app
 ENV PYTHONPATH /opt/scannertools:$PYTHONPATH
+ENV PYTHONPATH /opt/esper:$PYTHONPATH
+ENV PYTHONPATH /django:$PYTHONPATH
 
-CMD cp .scanner.toml /root/ && \
-    ./docker/scripts/google-setup.sh && \
-    ./docker/scripts/jupyter-setup.sh && \
+CMD cp /app/.scanner.toml /root/ && \
+    /app/docker/scripts/google-setup.sh && \
+    /app/docker/scripts/jupyter-setup.sh && \
     supervisord -c supervisord.conf

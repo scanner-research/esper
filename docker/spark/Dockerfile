@@ -1,6 +1,6 @@
 ARG base_name
 FROM ${base_name}:cpu
-ARG spark_version=2.4.2
+ARG spark_version=2.4.3
 
 WORKDIR /opt
 RUN wget -q http://apache.mirrors.tds.net/spark/spark-${spark_version}/spark-${spark_version}-bin-hadoop2.7.tgz && \

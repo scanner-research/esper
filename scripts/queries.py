@@ -1,10 +1,10 @@
-from app.models import Video
-from esperlib.queries import register_query
+from scripts.models import Video
+from esper.queries import register_query
 
 
 @register_query("All videos")
 def all_videos():
-    from app.models import Video
+    from scripts.models import Video
     from vgrid import VideoVBlocksBuilder, VideoTrackBuilder, VideoMetadata
     from rekall import IntervalSet, Interval, Bounds3D, IntervalSetMapping
 

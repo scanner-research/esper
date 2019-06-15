@@ -10,6 +10,11 @@ import socket
 import os
 import pathlib
 
+REPO_DIR = os.path.join(os.path.dirname(__file__), '..')
+DJANGO_DIR = os.path.join(REPO_DIR, 'django')
+DOCKER_DIR = os.path.join(REPO_DIR, 'docker')
+SCRIPTS_DIR = os.path.join(REPO_DIR, 'scripts')
+
 NGINX_PORT = '80'
 IPYTHON_PORT = '8888'
 TF_VERSION = '1.11.0'
@@ -56,6 +61,15 @@ def main():
     parser.add_argument('--hostname', help='Internal use only')
     args = parser.parse_args()
 
+    if not os.path.isdir('docker'):
+        shutil.copytree(DOCKER_DIR, 'docker')
+
+    if not os.path.isfile('.dockerignore'):
+        shutil.copy(os.path.join(REPO_DIR, '.dockerignore'), '.dockerignore')
+
+    if not os.path.isdir('scripts'):
+        shutil.copytree(SCRIPTS_DIR, 'scripts')
+
     # TODO(wcrichto): validate config file
     base_config = DotMap(toml.load(args.config))
 
@@ -96,8 +110,8 @@ user=root
     """
 
     base_processes = {
-        'gunicorn': 'gunicorn --log-file=- -c gunicorn_conf.py django_settings.wsgi:application --reload',
-        'notebook': 'python3 manage.py shell_plus --notebook'
+        'gunicorn': 'gunicorn --log-file=- -c /django/gunicorn_conf.py django_settings.wsgi:application --reload',
+        'notebook': 'python3 /django/manage.py shell_plus --notebook'
     }
 
     extra_processes = {'npm': 'npm run watch --color'}
@@ -113,6 +127,7 @@ user=root
         volumes:
           - .:/app
           - ./docker/nginx:/tmp
+          - {django_dir}:/django
         depends_on: [app, frameserver]
         ports: ["{nginx_port}:80", "{ipython_port}:8888"]
         environment: []
@@ -131,7 +146,8 @@ user=root
         depends_on: [db, frameserver]
         volumes:
           - .:/app
-          - ./service-key.json:/app/service-key.json
+          - {django_dir}:/django
+          - {repo_dir}:/opt/esper
         ports: ["8000", "{ipython_port}"]
         environment:
           - IPYTHON_PORT={ipython_port}
@@ -153,7 +169,9 @@ user=root
             workers=cores * 2,
             columns=tsize.columns,
             lines=tsize.lines,
-            term=os.environ.get('TERM')))
+            term=os.environ.get('TERM'),
+            django_dir=DJANGO_DIR,
+            repo_dir=REPO_DIR))
 
     db_options = {
         'local':
@@ -184,6 +202,9 @@ user=root
             'GOOGLE_PROJECT={}'.format(base_config.google.project),
             'GOOGLE_ZONE={}'.format(base_config.google.zone)
         ])
+
+        config.services.app.volumes.append(
+          './service-key.json:/app/service-key.json')
 
     # GPU settings
     device = base_config.docker.device

@@ -1,4 +1,4 @@
-from esperlib.views import register_view
+from esper.views import register_view
 from django.http import JsonResponse
 
 

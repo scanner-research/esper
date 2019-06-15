@@ -143,3 +143,5 @@ NOTEBOOK_ARGUMENTS = [
     '--ip', '0.0.0.0', '--allow-root', '--port',
     os.environ.get('IPYTHON_PORT')
 ]
+
+MIGRATION_MODULES = {'server': 'scripts.migrations'}

@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from . import views
-import app.views
-from esperlib.views import VIEWS
+import scripts.views
+from esper.views import VIEWS
 
 urlpatterns = VIEWS + [
     url(r'^api/search', views.search, name='search'),

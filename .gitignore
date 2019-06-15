@@ -13,3 +13,4 @@ supervisord.conf
 **/*.pyc
 **/*.swp
 **/__pycache__
+**/*.egg-info

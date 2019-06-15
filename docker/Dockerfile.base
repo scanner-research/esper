@@ -14,7 +14,7 @@ COPY ./docker/requirements.base.txt ./
 RUN /tmp/build-tf.sh
 RUN pip3 install -r requirements.base.txt
 
-COPY manage.py scannerpatc[h] ./
+COPY .dockerignore scannerpatc[h] ./
 RUN if [ -f /app/scannerpatch ]; then \
     cd /opt/scanner && \
     git apply /app/scannerpatch && \

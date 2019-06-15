@@ -34,8 +34,8 @@ VTT_FROM_CAPTION_INDEX = True
 
 # Renders home page
 def index(request):
-    import app.queries
-    from esperlib.queries import QUERIES
+    import scripts.queries
+    from esper.queries import QUERIES
 
     def get_fields(cls):
         fields = cls._meta.get_fields()
