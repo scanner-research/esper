@@ -2,7 +2,7 @@ language: node_js
 node_js: 10
 install:
 - pyenv install 3.5.0 && pyenv global 3.5.0
-- cd esper/django/ui && npm install && npm run build
+- pushd esper/django/ui && npm install && npm run build && popd
 - pip3 install .
 script: echo "No tests for now"
 deploy:

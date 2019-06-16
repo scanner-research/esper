@@ -9,7 +9,7 @@ data_files = [(os.path.join(base_dir, path), [os.path.join(path, f)])
 
 if __name__ == "__main__":
     setup(
-        name='esper',
+        name='esper-video',
         version='0.1.0',
         description='A framework for end-to-end video analytics',
         url='http://github.com/scanner-research/esper',
