@@ -27,22 +27,31 @@ Docker version 17.12.0-ce, build c97c6d6
 
 > Note: If you have a GPU and are running on Linux, then install [nvidia-docker2](https://github.com/NVIDIA/nvidia-docker). Set `device = "gpu-9.1-cudnn7` in `config/local.toml`.
 
-Next, you will need to configure your Esper installation.
+
+Next, you need to install Esper. You can do this through pip, or see the developer instructions below for installing from source.
 
 ```
-$ git clone https://github.com/scanner-research/esper
-$ cd esper
-$ pip3 install -r docker/requirements.host.txt
-$ python3 docker/configure.py --config config/local.toml
-$ docker-compose up -d
-$ docker-compose run app bash --login -c "cd ui && npm install --unsafe-perm && npm run prepublishOnly"
+pip3 install esper-video
 ```
+
+Finally you need to set up your Esper project.
+
+```
+mkdir my_project
+cd my_project
+wget https://raw.githubusercontent.com/scanner-research/esper/master/config/local.toml
+esper -c local.toml
+docker-compose up -d
+```
+
+TODO: next steps
 
 ### Esper developers
 
 If you're developing the Esper core platform or otherwise want to stay up to date with our dependencies, then you should clone and link our submodules.
 
 ```
-$ git submodule update --init --recursive
-$ docker-compose run app bash --login -c "./deps/install.sh"
+git clone --recursive https://github.com/scanner-research/esper
 ```
+
+TODO: remaining instructions
