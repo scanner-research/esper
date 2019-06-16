@@ -9,11 +9,12 @@ import shutil
 import socket
 import os
 import pathlib
+from pkg_resources import resource_filename
 
-REPO_DIR = os.path.join(os.path.dirname(__file__), '..')
-DJANGO_DIR = os.path.join(REPO_DIR, 'django')
-DOCKER_DIR = os.path.join(REPO_DIR, 'docker')
-SCRIPTS_DIR = os.path.join(REPO_DIR, 'scripts')
+BASE_DIR = os.path.dirname(__file__)
+DJANGO_DIR = os.path.join(BASE_DIR, 'django')
+DOCKER_DIR = os.path.join(BASE_DIR, 'docker')
+SCRIPTS_DIR = os.path.join(BASE_DIR, 'scripts')
 
 NGINX_PORT = '80'
 IPYTHON_PORT = '8888'
@@ -65,7 +66,7 @@ def main():
         shutil.copytree(DOCKER_DIR, 'docker')
 
     if not os.path.isfile('.dockerignore'):
-        shutil.copy(os.path.join(REPO_DIR, '.dockerignore'), '.dockerignore')
+        shutil.copy(os.path.join(DOCKER_DIR, '.dockerignore'), '.dockerignore')
 
     if not os.path.isdir('scripts'):
         shutil.copytree(SCRIPTS_DIR, 'scripts')
@@ -147,7 +148,7 @@ user=root
         volumes:
           - .:/app
           - {django_dir}:/django
-          - {repo_dir}:/opt/esper
+          - {base_dir}:/opt/esper/esper
         ports: ["8000", "{ipython_port}"]
         environment:
           - IPYTHON_PORT={ipython_port}
@@ -171,7 +172,7 @@ user=root
             lines=tsize.lines,
             term=os.environ.get('TERM'),
             django_dir=DJANGO_DIR,
-            repo_dir=REPO_DIR))
+            base_dir=BASE_DIR))
 
     db_options = {
         'local':

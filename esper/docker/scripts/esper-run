@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python3 /django/manage.py run -- $*

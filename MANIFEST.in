@@ -1,0 +1,6 @@
+recursive-include esper/django *
+prune esper/django/ui/node_modules
+
+recursive-include esper/docker *
+recursive-include esper/scripts *
+recursive-include esper/notebooks *
