@@ -12,6 +12,7 @@ import pathlib
 from pkg_resources import resource_filename
 
 BASE_DIR = os.path.dirname(__file__)
+DEPS_DIR = os.path.join(BASE_DIR, '..', 'deps')
 DJANGO_DIR = os.path.join(BASE_DIR, 'django')
 DOCKER_DIR = os.path.join(BASE_DIR, 'docker')
 SCRIPTS_DIR = os.path.join(BASE_DIR, 'scripts')
@@ -84,7 +85,7 @@ def main():
     environment: []
     depends_on: [db]
     volumes:
-      - ./app:/app
+      - .:/app
     """),
         'gentle':
         yaml_load("""
@@ -137,6 +138,8 @@ user=root
         image: scannerresearch/frameserver
         ports: ['{frameserver_port}:7500']
         environment: ['WORKERS={workers}']
+        volumes:
+          - .:/host/app
 
       app:
         build:
@@ -149,6 +152,7 @@ user=root
           - .:/app
           - {django_dir}:/django
           - {base_dir}:/opt/esper/esper
+          - {deps_dir}:/opt/deps
         ports: ["8000", "{ipython_port}"]
         environment:
           - IPYTHON_PORT={ipython_port}
@@ -172,7 +176,8 @@ user=root
             lines=tsize.lines,
             term=os.environ.get('TERM'),
             django_dir=DJANGO_DIR,
-            base_dir=BASE_DIR))
+            base_dir=BASE_DIR,
+            deps_dir=DEPS_DIR))
 
     db_options = {
         'local':

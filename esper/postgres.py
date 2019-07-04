@@ -9,8 +9,8 @@ import os
 def export_to_csv(model, output_path=None):
     model_name = model._meta.db_table
     if output_path is None:
-        Path('/app/data/postgres').mkdir(parents=True, exist_ok=True)
-        output_path = '/app/data/postgres/{}.csv'.format(model_name)
+        Path('/app/data/postgres_csv').mkdir(parents=True, exist_ok=True)
+        output_path = '/app/data/postgres_csv/{}.csv'.format(model_name)
 
     script = """
     bash -c 'rm -f {output} && (echo "\copy (SELECT * FROM {table}) TO '{output}' WITH CSV HEADER;" | psql -h db esper {user})'

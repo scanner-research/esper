@@ -1,5 +1,5 @@
 # INSECURE - allows reads of any file in your esper directory
 location /system_media {
-    alias /app;
+    alias /;
     error_page 403 404 = @fallback;
 }

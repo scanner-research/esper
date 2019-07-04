@@ -1,3 +1,4 @@
+
 from pyspark.sql import SparkSession, Row
 import csv
 import os
@@ -19,7 +20,7 @@ class TableDelegator:
         return self._spark.load(k)
 
 
-class SparkWrapper:
+class EsperSpark:
     def __init__(self):
         self.spark = SparkSession.builder \
             .master("spark://spark:7077") \
@@ -32,11 +33,12 @@ class SparkWrapper:
             .getOrCreate()
         self.sc = self.spark.sparkContext
         self.table = TableDelegator(self)
+        self._dfs = {}
 
     # queryset to dataframe
     def qs_to_df(self, qs):
         qs.save_to_csv('tmp')
-        return self.load_csv('/app/data/postgres/tmp.csv')
+        return self.load_csv('/app/data/postgres_csv/tmp.csv')
 
     def load_csv(self, path):
         return self.spark.read.format("csv").option("header", "true").option(
@@ -85,12 +87,12 @@ class SparkWrapper:
     def load(self, key):
         if not isinstance(key, str):
             key = key._meta.db_table
-        key = '{}/{}'.format(SPARK_DATA_PREFIX, key)
-        return self.spark.read.load(key)
+        if not key in self._dfs:
+            key = '{}/{}'.format(SPARK_DATA_PREFIX, key)
+            df = self.spark.read.load(key).persist()
+            self._dfs[key] = df
+        return self._dfs[key]
 
     def save(self, key, df):
         key = '{}/{}'.format(SPARK_DATA_PREFIX, key)
         df.write.save(key)
-
-
-spark = SparkWrapper()

@@ -183,9 +183,32 @@ class Video(EsperModel):
     def duration(self):
         return self.num_frames / self.fps
 
-    def for_scannertools(self):
-        from scannertools import Video as STVideo
-        return STVideo(self.path)
+    def for_vgrid(self):
+        from vgrid import VideoMetadata
+        return VideoMetadata(path=self.path,
+                             id=self.id,
+                             fps=self.fps,
+                             num_frames=self.num_frames,
+                             width=self.width,
+                             height=self.height)
+
+    def for_hwang(self):
+        import hwang, storehouse
+        backend = storehouse.StorageBackend.make_from_config(storehouse.StorageConfig.make_posix_config())
+        dec = hwang.Decoder(storehouse.RandomReadFile(backend, self.path))
+        return dec
+
+    @classmethod
+    def infer_ffmpeg(cls, path, **kwargs):
+        from vgrid import VideoMetadata
+        meta = VideoMetadata(path=path)
+        return cls(
+            path=path,
+            num_frames=meta.num_frames,
+            fps=meta.fps,
+            width=meta.width,
+            height=meta.height,
+            **kwargs)
 
     class Meta(EsperModel.Meta):
         abstract = True

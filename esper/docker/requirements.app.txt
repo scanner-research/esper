@@ -30,6 +30,6 @@ google_images_download==2.5.0
 internetarchive==1.8.4
 pysrt==1.1.1
 
-rekallpy
-vgridpy
-vgrid_jupyter
+#rekallpy
+#vgridpy
+#vgrid_jupyter
