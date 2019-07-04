@@ -1,6 +1,7 @@
 language: node_js
 node_js: 10
 install:
+- pip3 install --upgrade pip
 - pyenv install 3.5.0 && pyenv global 3.5.0
 - pushd esper/django/ui && npm install && npm run build && popd
 - pip3 install --upgrade setuptools
